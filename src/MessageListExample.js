@@ -68,8 +68,8 @@ export const MessageListExample = () => {
     });
   };
 
-  const loadMoreRecentMessages = async () => {
-    const newMessages = await queryMoreMessages(10);
+  const loadMoreRecentMessages = async n => {
+    const newMessages = await queryMoreMessages(typeof n === 'number' ? n : 10);
     setMessages(m => {
       return m.concat(newMessages);
     });
@@ -83,7 +83,7 @@ export const MessageListExample = () => {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Chat between two users</Text>
-        <TouchableOpacity onPress={loadMoreRecentMessages}>
+        <TouchableOpacity onPress={() => loadMoreRecentMessages(10)}>
           <Text style={styles.headerTitle}>Send long message</Text>
         </TouchableOpacity>
       </View>
@@ -91,8 +91,8 @@ export const MessageListExample = () => {
         style={{opacity: opacity.current}}
         ref={listRef}
         data={messages}
-        inverted
-        onEndReached={loadMoreOlderMessages}
+        onStartReached={loadMoreOlderMessages}
+        onEndReached={loadMoreRecentMessages}
         onScrollToIndexFailed={e => {
           shouldBeFadeIn.current = false;
           const offset = e.averageItemLength * e.index;
